@@ -1,1 +1,53 @@
-MagicASP is a light tool for ASP.
+MagicASP - 轻量级ASP整合框架
+
+单一入口文件
+通过module，action，view 3个文件夹放置ASP文件，代码再也不会乱。其实这样也做到了视图分离。
+方便的伪静态支持，需添加URL Rewrite规则
+全面支持JScript跟VBscript，虽然用JScript写的，但是支持VBScript的。亲们放心。
+ 
+版本控制，非常方便的版本回档功能，注意：代码不回档，运行内容回档。
+在线Debug，新建两个入口文件，添加不同的版本变量。可以实现在线调试跟产品运行不冲突。
+ 
+减少代码开发量
+	get_ 代替 Request.QueryString
+	post_ 代替 Request.Form
+	echo 代替 Response.Write 支持多参数 例如 <% echo "Magic" , "ASP" %> = <% = "MagicASP"%>
+    
+方便的链接生成以及站点转移
+	<% = url.root("images/register.gif") %> = http://www.example.com/images/register.gif
+	<% = url.create("user/register/",kv("name","demo"))  %>  = http://www.example.com/index.asp?_=user/register/&name=demo
+ 
+日志记录HTTP请求，根据日生产日志文件，方便研究。当然也可以不开启。
+	日志格式为：`RemoteIP` `DateTime` `HTTP Method` `Request` `HTTP Protocol Version` `HTTP Referer` `UserAgent`
+	站长么可以没事用用文本处理工具或者语言处理下日志文件，统计下访问量啥的。
+ 
+替换<-- #include file="test.asp" --> 为 <-- #require file="test.asp" -->
+替换<-- #include virtual="test.asp" --> 为 <-- #require virtual="test.asp" -->
+原有的<-- #include file="test.asp" --> 变为路径无关的引入方式，file中的路径始终为当前应用程序的根目录，不是站点根目录。
+ 
+注意1：回档功能以及在线调试需保证 主入口配置 debug 始终为 false 以及runtime下生成的全部文件完好无缺,注意是全部文件,旧的代码全部在里面，并且保证所有module跟action的文件均生产。
+注意2：回档功能不能保证使用了<-- #require file="test.asp" -->的文件还能完整，所以建议全部使用include而不是require
+ 
+2012年2月10日更新：
+	最新支持UTF-8跟GBK两种编码，其他编码就无视了。主入口的文件编码不管，但是module,action,view文件的编码一定得是你选择的编码类型，英文不要紧，中文就会悲剧的。
+			
+
+==原理
+
+通过分析QueryString取得m跟a的值。 比如链接：http://www.example.com/index.asp?_=user/register/&name=demo 那么m=user a=register
+根据需要进行日志记录。
+判断m的值是否存在于Module List中，不存在则报错：404 - UNDEFINED MODULE
+如果有则去引用module文件夹下user.asp，再去action文件夹的user文件夹下register.asp。
+如果任何一个文件不存在那么报错404 - File Not Found
+事实上上面还需要对于内容在的include语法进行替换并且引入，如果include的文件不存在那么也进行报错。还要对于文件开头的<% RESPONSE.END %>进行替换的。
+将读取好的内容放置到全局变量application中，保证只读取一次，提高效率[非调试模式下]。
+上面的进度都好了之后，会将文本内容保存到一个叫scriptContent的变量当中。
+然后给scriptContent添加以下的内容[事实上这部分是先做的]
+	<% @LANGUAGE="VBSCRIPT" CODEPAGE="" %> //程序编码
+    防止直接访问runtime里面的文件的函数
+所有都好了之后生产内容到runtime/user_register_version.asp文件
+然后Server.Transfer跳转到该文件
+如果不开启调试模式的话
+	判断runtime/user_register_version.asp是存在
+    是：直接执行
+    否：执行最上面的步骤一次
