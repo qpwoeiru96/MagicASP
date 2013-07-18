@@ -1,27 +1,27 @@
 <!-- #include file="MagicASP_Utility.ASP" -->
 <script Language="JScript" RunAt="Server">
-/*
- * MagicASP Ò»¸öASPÎÄ¼ş×Ô¶¯ºÏ²¢¹¤¾ß ÓÃÓÚÍ³Ò»URL. 
+/**
+ * MagicASP ä¸€ä¸ªASPæ–‡ä»¶è‡ªåŠ¨åˆå¹¶å·¥å…· ç”¨äºç»Ÿä¸€URL. 
  * @version: beta
  * @author:qpwoeiru96
  * @link: http://sou.la/blog
  * @date: 2012-02-18 05:29:29
- * @version£º2012-02-18 05:29:29
+ * @versionï¼š2012-02-18 05:29:29
  */
 
 MagicASP = function( config ) {
 	
 	var config = ( typeof config === 'undefined' ) ? {} : config ;
 	this['config'] = _copy( config, {
-		codePage : 65001 , //Éú³ÉÎÄ¼şµÄ´úÂëÒ³ Ä¬ÈÏÊÇUTF-8µÄ´úÂëÒ³ 
-		directory : '' , //ÅäÖÃÖ®Ò»µÄÄ¿Â¼ Èç¹û¸ùÄ¿Â¼Çë±£ÁôÎª¿Õ ºóÃæÇë¼Ó / ÀıÈç MagicASP/
-		debug : true , //²úÆ·ÖĞÇëÉèÖÃÎªfalse ÊÇ·ñ¿ªÆôµ÷ÊÔÄ£Ê½
-		version : 'alpha' , //°æ±¾ÉèÖÃÓÃÓÚ²»Í¬°æ±¾µÄµ÷ÓÃ
-		logPath :  'logs/' , //ÈÕÖ¾±£´æÂ·¾¶ ºóÃæÇë¼Ó / ÀıÈç logs/
-		accessLog :  true ,// ÊÇ·ñ¼ÇÂ¼·ÃÎÊĞÅÏ¢
+		codePage : 65001 , //ç”Ÿæˆæ–‡ä»¶çš„ä»£ç é¡µ é»˜è®¤æ˜¯UTF-8çš„ä»£ç é¡µ 
+		directory : '' , //é…ç½®ä¹‹ä¸€çš„ç›®å½• å¦‚æœæ ¹ç›®å½•è¯·ä¿ç•™ä¸ºç©º åé¢è¯·åŠ  / ä¾‹å¦‚ MagicASP/
+		debug : true , //äº§å“ä¸­è¯·è®¾ç½®ä¸ºfalse æ˜¯å¦å¼€å¯è°ƒè¯•æ¨¡å¼
+		version : 'alpha' , //ç‰ˆæœ¬è®¾ç½®ç”¨äºä¸åŒç‰ˆæœ¬çš„è°ƒç”¨
+		logPath :  'logs/' , //æ—¥å¿—ä¿å­˜è·¯å¾„ åé¢è¯·åŠ  / ä¾‹å¦‚ logs/
+		accessLog :  true ,// æ˜¯å¦è®°å½•è®¿é—®ä¿¡æ¯
         scriptFileName : 'index.asp' ,
 		siteAddress : 'http://www.example.com/' ,
-		redirectAddress : false //404³ö´íÌø×ªµØÖ· 
+		redirectAddress : false //404å‡ºé”™è·³è½¬åœ°å€ 
 	});	
 	
 	this['fso'] = new ActiveXObject("Scripting.FileSystemObject");
@@ -32,7 +32,7 @@ MagicASP = function( config ) {
 	this['str']['Type'] = 2;	
 	this['str']['CharSet'] = this['CharSet'];
 
-	 //ÅĞ¶ÏÊÇ·ñLog Ö´ĞĞLog()
+	 //åˆ¤æ–­æ˜¯å¦Log æ‰§è¡ŒLog()
 	if( this['config']['accessLog'] ) this.log();
 	
 	$A('scriptURL') = this['config']['siteAddress'] + this['config']['scriptFileName'] ;
@@ -52,13 +52,13 @@ MagicASP.prototype.init = function( moduleList ) {
 	this['module'] = mod === false || mod == "" ? 'index' : mod;
 	this['action'] = act === false || act == "" ? 'index' : act;
 	
-	//·ÀÖ¹¿çÎÄ¼şµ÷ÓÃ
+	//é˜²æ­¢è·¨æ–‡ä»¶è°ƒç”¨
 	if( ( this['action']).match(/\.+/) ) {
 		var detail = "This action is unsupported."
 		this.throwError( 404, 'UNSUPPORT ACTION', detail); 
 	}
 	
-	//·ÀÖ¹³öÏÖÎ´¶¨ÒåµÄÄ£¿é
+	//é˜²æ­¢å‡ºç°æœªå®šä¹‰çš„æ¨¡å—
 	if( this.arrayIndexOf(this['moduleList'], this['module'] )  === -1 ) {
 		this.throwError( 404, 'UNDEFINED MODULE', 'Undefined module.' );
 	}
@@ -68,7 +68,7 @@ MagicASP.prototype.run = function() {
 	
 	var runFilePath = this['module'] + '_' + this['action'] + '_' + this['config']['version'] + '.asp';
 		
-	if ( !this['fso']['FolderExists']( this.rootPath + 'runtime\\' ) ) { //´´½¨runtimeÄ¿Â¼
+	if ( !this['fso']['FolderExists']( this.rootPath + 'runtime\\' ) ) { //åˆ›å»ºruntimeç›®å½•
 		this['fso']['CreateFolder']( this.rootPath + 'runtime\\' );
 	}
 	
@@ -77,20 +77,21 @@ MagicASP.prototype.run = function() {
 	if( this['config']['debug'] || !this['fso'].FileExists(runFilePath) ) {
 					
 		var scriptContent = "<% @LANGUAGE=\"VBSCRIPT\" CODEPAGE=\"" + this['config']['codePage'] + "\" %>\r\n";
-		//scriptContent += this.addScriptTag( __UTILITY__, "JScript");
+		scriptContent += '<' + '%' +  this['Static']['VBSAccessCheckCode'] + '%>';
+		scriptContent += this.addScriptTag( this['Static']['JSAccessCheckCode'], "JScript" );
 		scriptContent += this.include('module\\' + this['module'] + '.asp');
 		scriptContent += this.include('action\\' + this['module'] + '\\' + this['action'] + '.asp');
 		scriptContent = scriptContent.replace(/MagicASP_INCLUDE_MARK/g , "include");
 		this.writeTextFile( runFilePath, scriptContent );
 
 	}
-	Server.Execute( runFilePath.replace( Server.Mappath('\\'), '' ) );
+	$S.Transfer( runFilePath.replace( $S.Mappath('\\'), '' ) );
 }
 
-/*
- * ÎÄ¼ş°üº¬·½·¨ [MagicASP¹Ø¼üºËĞÄ]
- * @parameter filepath String ÎÄ¼şÏà¶ÔÂ·¾¶ 
- * @return String ½Å±¾Éú³ÉµÄÄÚÈİ
+/**
+ * æ–‡ä»¶åŒ…å«æ–¹æ³• [MagicASPå…³é”®æ ¸å¿ƒ]
+ * @parameter filepath String æ–‡ä»¶ç›¸å¯¹è·¯å¾„ 
+ * @return String è„šæœ¬ç”Ÿæˆçš„å†…å®¹
  */
 MagicASP.prototype.include = function( filePath ) {
 	
@@ -98,7 +99,7 @@ MagicASP.prototype.include = function( filePath ) {
 		scriptContent ,
 		fileApplicationName ;
 
-	//Application±äÁ¿ÖĞ±£´æµÄÎÄ¼şÃû³Æ
+	//Applicationå˜é‡ä¸­ä¿å­˜çš„æ–‡ä»¶åç§°
 	fileApplicationName = ( filePath.substring( 0, filePath.indexOf('.asp') ) ).split("\\").join("_") ;
 	filePath = this['rootPath'] + filePath;
 	filePath = filePath.replace(/\//g,"\\");
@@ -109,17 +110,17 @@ MagicASP.prototype.include = function( filePath ) {
 		if( this['fso'].FileExists( filePath ) ){
 			
 			scriptContent = this.readTextFile( filePath );
-			//È¥³ıÃ¿¸öÎÄ¼şµÄ <% RESPONSE.END %>			
+			//å»é™¤æ¯ä¸ªæ–‡ä»¶çš„ <% RESPONSE.END %>			
 			scriptContent = scriptContent.replace(/^<% RESPONSE\.END %>\r\n/, '');
 
 			var self = this ;
 			
-			//½«Ô­ÓĞµÄincludeÓï·¨½øĞĞÌæ»» ×¢ÒâvirtualÖĞÂ·¾¶Îªµ±Ç°Ó¦ÓÃÂ·¾¶ ×Ô¶¯½øĞĞÌæ»»
+			//å°†åŸæœ‰çš„includeè¯­æ³•è¿›è¡Œæ›¿æ¢ æ³¨æ„virtualä¸­è·¯å¾„ä¸ºå½“å‰åº”ç”¨è·¯å¾„ è‡ªåŠ¨è¿›è¡Œæ›¿æ¢
 			scriptContent = scriptContent.replace(/<!-{2} ?#include ?virtual=\"(.*)\" ?-->/ig , function( $1, $2 ) {
 				return self.include($2);
 			});
 			
-			//½«Ô­ÓĞµÄincludeÓï·¨½øĞĞÌæ»» fileÖĞÂ·¾¶Îªµ±Ç°ÎÄ¼şÂ·¾¶ ×Ô¶¯½øĞĞÌæ»»
+			//å°†åŸæœ‰çš„includeè¯­æ³•è¿›è¡Œæ›¿æ¢ fileä¸­è·¯å¾„ä¸ºå½“å‰æ–‡ä»¶è·¯å¾„ è‡ªåŠ¨è¿›è¡Œæ›¿æ¢
 			scriptContent = scriptContent.replace(/<!-{2} ?#include ?file=\"(.*)\" ?-->/ig , function( $1, $2 ) { 
 				$2 = $2.replace(/\//g,"\\");		
                 var currentPath = filePath.replace(self['rootPath'],"");
@@ -128,7 +129,7 @@ MagicASP.prototype.include = function( filePath ) {
 				return self.include( path );	
 			});
 			
-            //ĞÂÔörequireÓï·¨ ¾ÍÊÇÔ­±¾µÄincludeÓï·¨ Ò»°ã²»ÍÆ¼ö´ËÓï·¨ ÒòÎªÊÇÂ·¾¶Ïà¹ØµÄ ÈİÒ×³ö´í ½¨ÒéÊ¹ÓÃÔÚµ÷ÊÔÄ£Ê½
+            //æ–°å¢requireè¯­æ³• å°±æ˜¯åŸæœ¬çš„includeè¯­æ³• ä¸€èˆ¬ä¸æ¨èæ­¤è¯­æ³• å› ä¸ºæ˜¯è·¯å¾„ç›¸å…³çš„ å®¹æ˜“å‡ºé”™ å»ºè®®ä½¿ç”¨åœ¨è°ƒè¯•æ¨¡å¼
 			scriptContent = scriptContent.replace(/<!-{2} ?#require ?file=\"(.*)\" ?-->/ig , function( $1, $2 ) {
                 $2 = $2.replace(/\//g,"\\");
 				var currentPath = filePath.substring(0,filePath.lastIndexOf("\\"));
@@ -138,7 +139,7 @@ MagicASP.prototype.include = function( filePath ) {
 				return "\<\!-- #" + "MagicASP_INCLUDE_MARK " + "virtual=\"" +  path + "\" --\>";
 			});
 
-			//ĞÂÔörequireÓï·¨ ¾ÍÊÇÔ­±¾µÄincludeÓï·¨ Ò»°ã²»ÍÆ¼ö´ËÓï·¨ ÒòÎªÊÇÂ·¾¶Ïà¹ØµÄ ÈİÒ×³ö´í ½¨ÒéÊ¹ÓÃÔÚµ÷ÊÔÄ£Ê½
+			//æ–°å¢requireè¯­æ³• å°±æ˜¯åŸæœ¬çš„includeè¯­æ³• ä¸€èˆ¬ä¸æ¨èæ­¤è¯­æ³• å› ä¸ºæ˜¯è·¯å¾„ç›¸å…³çš„ å®¹æ˜“å‡ºé”™ å»ºè®®ä½¿ç”¨åœ¨è°ƒè¯•æ¨¡å¼
 			scriptContent = scriptContent.replace(/<!-{2} ?#require ?virtual=\"(.*)\" ?-->/ig , function( $1, $2 ) {
                 $2 = $2.replace(/\//g,"\\");				
 				var currentPath = $S.MapPath("\\") + "\\" + self['config']['directory'];
@@ -149,10 +150,10 @@ MagicASP.prototype.include = function( filePath ) {
 			});
 			
 			if( this['config']['debug'] ) {
-                //ÎªÁË·½±ãµ÷ÊÔ ¶¨Î»³ö´íÎÄ¼şÔÚÄÄ
+                //ä¸ºäº†æ–¹ä¾¿è°ƒè¯• å®šä½å‡ºé”™æ–‡ä»¶åœ¨å“ª
 				scriptContent = "\r\n<% '-------- start@:" + filePath + " --------  %>\r\n" + scriptContent + "\r\n<% '-------- end@:" + filePath + " --------  %>\r\n";
 			} else {
-				//»º´æÒÑ¾­¶ÁÈ¡µÄÎÄ¼ş
+				//ç¼“å­˜å·²ç»è¯»å–çš„æ–‡ä»¶
                 $A(fileApplicationName) = scriptContent;
             }
 			
@@ -172,10 +173,10 @@ MagicASP.prototype.include = function( filePath ) {
 }
 
 
-/*
- * Í¨¹ıADODB Stream¶ÁÈ¡ÎÄ±¾ÎÄ¼ş
- * @parameter filePath String Òª¶ÁÈ¡µÄÎÄ¼şÂ·¾¶
- * @return String ÎÄ±¾ÄÚÈİ
+/**
+ * é€šè¿‡ADODB Streamè¯»å–æ–‡æœ¬æ–‡ä»¶
+ * @parameter filePath String è¦è¯»å–çš„æ–‡ä»¶è·¯å¾„
+ * @return String æ–‡æœ¬å†…å®¹
  */
 MagicASP.prototype.readTextFile = function( filePath ) {
 	
@@ -193,10 +194,10 @@ MagicASP.prototype.readTextFile = function( filePath ) {
 	return result;
 }
 
-/*
- * Í¨¹ıADODB StreamĞ´ÈëÎÄ±¾ÎÄ¼ş
- * @parameter filePath String ÎÄ¼şÂ·¾¶
- * @parameter content String Ğ´ÈëÎÄ±¾ÄÚÈİ
+/**
+ * é€šè¿‡ADODB Streamå†™å…¥æ–‡æœ¬æ–‡ä»¶
+ * @parameter filePath String æ–‡ä»¶è·¯å¾„
+ * @parameter content String å†™å…¥æ–‡æœ¬å†…å®¹
  * @return none
  */ 
 MagicASP.prototype.writeTextFile = function( filePath , content ) {
@@ -214,11 +215,11 @@ MagicASP.prototype.writeTextFile = function( filePath , content ) {
 	
 }
 
-/*
- * Êı×é²éÕÒ
- * @parameter array Array ĞèÒª±»²éÕÒµÄÊı×é
- * @parameter value String ±»²éÕÒµÄ×Ö·û´®
- * @return Number ËùÔÚÎ»ÖÃ Î´ÕÒµ½Ôò·µ»Ø-1
+/**
+ * æ•°ç»„æŸ¥æ‰¾
+ * @parameter array Array éœ€è¦è¢«æŸ¥æ‰¾çš„æ•°ç»„
+ * @parameter value String è¢«æŸ¥æ‰¾çš„å­—ç¬¦ä¸²
+ * @return Number æ‰€åœ¨ä½ç½® æœªæ‰¾åˆ°åˆ™è¿”å›-1
  */
 
 MagicASP.prototype.arrayIndexOf = function( array , value ) { 
@@ -229,10 +230,10 @@ MagicASP.prototype.arrayIndexOf = function( array , value ) {
 }
 
 
-/*
- * »ñÈ¡ÕæÊµµÄÂ·¾¶È¥³ı ./ ../
- * @parameter path String ´«½øÀ´µÄÈ«Â·¾¶
- * @return String ´«³öÈ¥µÄÈ«Â·¾¶
+/**
+ * è·å–çœŸå®çš„è·¯å¾„å»é™¤ ./ ../
+ * @parameter path String ä¼ è¿›æ¥çš„å…¨è·¯å¾„
+ * @return String ä¼ å‡ºå»çš„å…¨è·¯å¾„
  */
 MagicASP.prototype.getTruePath = function( path ) {
 
@@ -251,21 +252,21 @@ MagicASP.prototype.getTruePath = function( path ) {
     return tmp.join("\\");
 }
 
-/*
- * ¸ø½Å±¾Ìí¼ÓÍâ²¿±êÇ© 
- * @parameter scriptContent String ÎÄ¼şÂ·¾¶
- * @parameter lang String ½Å±¾ÀàĞÍ Ò»°ãÊÇJScript ¸ú VBScript
- * @return ¼ÓºÃ±êÇ©Ö®ºóµÄ½Å±¾
+/**
+ * ç»™è„šæœ¬æ·»åŠ å¤–éƒ¨æ ‡ç­¾ 
+ * @parameter scriptContent String æ–‡ä»¶è·¯å¾„
+ * @parameter lang String è„šæœ¬ç±»å‹ ä¸€èˆ¬æ˜¯JScript è·Ÿ VBScript
+ * @return åŠ å¥½æ ‡ç­¾ä¹‹åçš„è„šæœ¬
  */
 MagicASP.prototype.addScriptTag = function( scriptContent, lang ) {
 	return '<' + 'script language="'+ lang +'" runat="server">\r\n' + scriptContent + '\r\n<\/script>';
 }
 
-/*
- * Å×³ö³ö´íĞÅÏ¢
- * @parameter httpCode String HTTP×´Ì¬Âë
- * @parameter title String ³ö´í±êÌâ
- * @parameter detail String ÏêÏ¸³ö´íĞÅÏ¢
+/**
+ * æŠ›å‡ºå‡ºé”™ä¿¡æ¯
+ * @parameter httpCode String HTTPçŠ¶æ€ç 
+ * @parameter title String å‡ºé”™æ ‡é¢˜
+ * @parameter detail String è¯¦ç»†å‡ºé”™ä¿¡æ¯
  * @return none
  */
 MagicASP.prototype.throwError = function(httpCode, title, detail){
@@ -276,15 +277,15 @@ MagicASP.prototype.throwError = function(httpCode, title, detail){
 		'title' : title,
 		'detail' : detail,
 		'serverInfo' : String.prototype.concat('MagicASP ',this['Static']['Version'] ,' @ ',server_("Server_Name") ,' ',server_("Server_Software"))
-	},this['Static']['errorTemplate']) );
+	}, this['Static']['errorTemplate']) );
 	Response.End();
 }
 
-/*
- * HTMLÄ£°åÌæ»»
- * @parameter contentArray String ²ÎÊıÁĞ±í
- * @parameter templateContent String Ä£°åÄÚÈİ
- * @return Ìæ»»ºóµÄÄÚÈİ
+/**
+ * HTMLæ¨¡æ¿æ›¿æ¢
+ * @parameter contentArray String å‚æ•°åˆ—è¡¨
+ * @parameter templateContent String æ¨¡æ¿å†…å®¹
+ * @return æ›¿æ¢åçš„å†…å®¹
  */
 MagicASP.prototype.replaceTemplate = function ( contentObject, templateContent ) {
 	for( var k in contentObject ) {
@@ -293,8 +294,8 @@ MagicASP.prototype.replaceTemplate = function ( contentObject, templateContent )
 	return templateContent;
 }
 
-/*
- * ½«ÓÃ»§·ÃÎÊĞ´Èëµ½ÈÕÖ¾
+/**
+ * å°†ç”¨æˆ·è®¿é—®å†™å…¥åˆ°æ—¥å¿—
  */
 MagicASP.prototype.log = function() {
 	
@@ -318,8 +319,8 @@ MagicASP.prototype.log = function() {
 
 }
 
-/*
- * ¸ù¾İÊ±¼ä»ñÈ¡ÈÕÖ¾ÎÄ¼şÃû 
+/**
+ * æ ¹æ®æ—¶é—´è·å–æ—¥å¿—æ–‡ä»¶å 
  */
 MagicASP.prototype.getLogFileName = function() {
 	
@@ -335,20 +336,20 @@ MagicASP.prototype.getLogFileName = function() {
 	
 }
 
-/*
- * ¾²Ì¬Êı¾İ
+/**
+ * é™æ€æ•°æ®
  */
 MagicASP.prototype.Static = { 
 	
-	/*
-	 * Å×³ö´íÎóµÄÄ£°å
+	/**
+	 * æŠ›å‡ºé”™è¯¯çš„æ¨¡æ¿
 	 */
 	errorTemplate : '<!DOCTYPE HTML>\ 
 <html>\
 <head>\
 	<title>{$httpCode} - {$title}</title>\
 	<style>html, body{margin:20px;padding:0;font:13px/22px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif}</style>\
-	<meta http-equiv="Content-Type" content="text/html; charset=gbk">\
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\
 </head>\
 <body>\
 	<fieldset>\
@@ -359,13 +360,20 @@ MagicASP.prototype.Static = {
 </body>\
 </html>',
 
-	/*
-	 * ÈÕÖ¾¼ÇÂ¼Ä£°å
+	/**
+	 * æ—¥å¿—è®°å½•æ¨¡æ¿
 	 */
 	logTemplate : '{$remoteIP} [{$time}] "{$method} {$fullPath} {$serverProtocol}" "{$referer}" "{$userAgent}"',
+	
+	/**
+	 * é˜²æ­¢ç›´æ¥è®¿é—®ä»£ç 
+	 */
+	VBSAccessCheckCode : "\r\n\tDim TempRegExp, ScriptName\r\n\tSet TempRegExp = New RegExp\r\n\tTempRegExp.IgnoreCase = True\r\n\tTempRegExp.Global = True\r\n\tTempRegExp.Pattern = \"[\\\/\\\\]runtime[\\\/\\\\]\"\r\n\tScriptName = Request.ServerVariables(\"SCRIPT_NAME\")\r\n\tIf( TempRegExp.Test(ScriptName) ) Then\r\n\t\tResponse.Status = \"404 Not Found\"\r\n\t\tCall Response.End()\r\n\tEnd If\r\n\tSet TempRegExp = Nothing\r\n\tSet ScriptName = Nothing\r\n",
+	
+	JSAccessCheckCode : "\r\n\tvar tempRegExp, scriptName;\r\n\tscriptName = Request.ServerVariables(\"SCRIPT_NAME\");\r\n\tif( \/[\\\/\\\\]runtime[\\\/\\\\]\/i.test(scriptName) ) {\r\n\t\tResponse.Status = \"404 Not Found\";\r\n\t\tResponse.End();\r\n\t}\r\n\ttempRegExp = undefined;\r\n\tscriptName = undefined;\r\n",
 		
-	/*
-	 * http×´Ì¬Âë¼ÇÂ¼¼¯
+	/**
+	 * httpçŠ¶æ€ç è®°å½•é›†
 	 */
 	HTTPStatuCode : {
 		'400' : 'Bad Request',
@@ -394,8 +402,8 @@ MagicASP.prototype.Static = {
 		'505' : 'HTTP Version Not Supported'
 	} ,
 
-	/*
-	 * ²úÆ·°æ±¾ĞÅÏ¢
+	/**
+	 * äº§å“ç‰ˆæœ¬ä¿¡æ¯
 	 */
 	Version : 'Beta-2012/02/18'
 	
