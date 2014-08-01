@@ -43,3 +43,10 @@ echo 代替 Response.Write 支持多参数 例如 <% echo "Magic" , "ASP" %> = <
 站长么可以没事用用文本处理工具或者语言处理下日志文件，统计下访问量啥的。
 
 PS: 这是本人于2011为一个门户网站项目开发的框架。估计是唯一一个不用eval实现了ASP的单一路口和动态加载（至少我没碰到过）。
+
+![文件夹目录][1]
+
+![合并之后的文件][2]
+
+  [1]: https://raw.githubusercontent.com/qpwoeiru96/MagicASP/master/screenshot/1.png
+  [2]: https://raw.githubusercontent.com/qpwoeiru96/MagicASP/master/screenshot/2.png
